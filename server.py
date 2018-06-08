@@ -15,16 +15,21 @@ def getint():
     return str(traffic)
 
 
-@app.route('/getbin') #get binary values of the intger
+@app.route('/getbin') #get binary bits sequence of the LED queue, first correspond to LED#2
 def getbin():
     global traffic
-    return bin(traffic)[2:]
+    b = bin(traffic)[2:]
+    while (len(b) < 7):
+        b = '0'+b
+    b = b[::-1]
+    return b
 
 @app.route('/post') #post an int value to this server and stored as traffic
 def post():
     global traffic
-    traffic = int(request.args.get('n'))
-    if traffic < 128 and traffic >= 0:
+    n = int(request.args.get('n'))
+    if n < 128 and n >= 0:
+        traffic = n
         LED_flags = intToBinArr(traffic)
         for i in range(0, 7):
             if i+2 in LED_MAPPING:
@@ -33,7 +38,7 @@ def post():
         return "input value is invalid, it should be ranged from 0 to 127"
         
     
-    return "request is proceeded, data is modified to " + str(traffic)
+    return "request is proceeded, data is modified to " + str(traffic) + "and the bits squence are " + getbin()
 
 ########## Control TSP50 LED ###########
 import RPi.GPIO as GPIO
