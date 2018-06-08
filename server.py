@@ -40,6 +40,28 @@ def post():
     
     return "request is proceeded, data is modified to " + str(traffic) + "and the bits squence are " + getbin()
 
+@app.route('/alloff')
+def alloff():
+    global traffic
+    GPIO.output(DetectorGPIOs, True)
+    traffic = 0
+    return "all LED are turned off"
+
+@app.route('/allon')
+def allon():
+    global traffic
+    GPIO.output(DetectorGPIOs, False)
+    traffic = 127
+    return "all LED are turned on"
+
+@app.route('/reset')
+def reset():
+    alloff()
+    GPIO.cleanup()
+    configTSP50()
+    return "TSP50 is cleaned up, and reseted"
+
+
 ########## Control TSP50 LED ###########
 import RPi.GPIO as GPIO
 import time
@@ -50,18 +72,11 @@ GPIO_BCM_channels = [2,3,4,17,27,22,10,9,11,5,6,13,19,26,
 DetectorGPIOs = [2, 3, 4, 17, 27, 22, 10]
 LED_MAPPING = {2:2, 3:3, 4:4, 5:17, 6:27, 7:22, 8:10}
 
-def DETECTOR_ON_ALL():
-        GPIO.output(DetectorGPIOs, False)
-        return 0
-
-def DETECTOR_OFF_ALL():
-        GPIO.output(DetectorGPIOs, True)
-        return 0
 
 def configTSP50():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(GPIO_BCM_channels, GPIO.OUT)
-    DETECTOR_OFF_ALL()
+    alloff()
 
 def intToBinArr(n): #convert an int to bits array
     b = bin(127-n)[2:] #complement exp. '0b0000110' => '0b1111001', there are total 7 LEDs 7 bits
