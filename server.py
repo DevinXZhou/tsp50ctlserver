@@ -4,7 +4,7 @@ from flask import request
 ########### Local Internet Server ###########
 app = Flask(__name__)
 traffic = 0
-
+last_flags = [1]*8
 @app.route('/')
 def root():
     return 'TSP50 Control Server'
@@ -32,7 +32,9 @@ def post():
         LED_flags = intToBinArr(traffic)
         for i in range(1, 8):
             if i+1 in LED_MAPPING:
-                GPIO.output(LED_MAPPING[i+1], LED_flags[i]) # 0 is on
+		if last_flags[i] != LED_flags[i]:
+			GPIO.output(LED_MAPPING[i+1], LED_flags[i]) # 0 is on
+	last_flags = LED_flags
     else:
         return "input value is invalid, it should be ranged from 0 to 255"
         
