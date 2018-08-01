@@ -32,9 +32,10 @@ def post():
         LED_flags = intToBinArr(traffic)
         for i in range(1, 8):
             if i+1 in LED_MAPPING:
-		if last_flags[i] != LED_flags[i]:
-			GPIO.output(LED_MAPPING[i+1], LED_flags[i]) # 0 is on
-	last_flags = LED_flags
+                if last_flags[i] != LED_flags[i]:
+                    GPIO.output(LED_MAPPING[i+1], LED_flags[i]) # 0 is on
+        global last_flags
+        last_flags = LED_flags
     else:
         return "input value is invalid, it should be ranged from 0 to 255"
         
