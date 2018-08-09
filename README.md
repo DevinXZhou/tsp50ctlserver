@@ -4,6 +4,7 @@
 #how to use this file, in the master directory
 
 export FLASK_APP=server.py
+
 flask run --host=ip
 
 //functions
